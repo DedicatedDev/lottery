@@ -9,12 +9,16 @@ import (
 
 func RegisterCodec(cdc *codec.LegacyAmino) {
 	cdc.RegisterConcrete(&MsgCreateLottery{}, "lottery/CreateLottery", nil)
+	cdc.RegisterConcrete(&MsgBidToLottery{}, "lottery/BidToLottery", nil)
 	// this line is used by starport scaffolding # 2
 }
 
 func RegisterInterfaces(registry cdctypes.InterfaceRegistry) {
 	registry.RegisterImplementations((*sdk.Msg)(nil),
 		&MsgCreateLottery{},
+	)
+	registry.RegisterImplementations((*sdk.Msg)(nil),
+		&MsgBidToLottery{},
 	)
 	// this line is used by starport scaffolding # 3
 

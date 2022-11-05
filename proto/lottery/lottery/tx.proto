@@ -8,6 +8,7 @@ option go_package = "github.com/DedicatedDev/lottery/x/lottery/types";
 // Msg defines the Msg service.
 service Msg {
       rpc CreateLottery(MsgCreateLottery) returns (MsgCreateLotteryResponse);
+  rpc BidToLottery(MsgBidToLottery) returns (MsgBidToLotteryResponse);
 // this line is used by starport scaffolding # proto/tx/rpc
 }
 
@@ -19,6 +20,18 @@ message MsgCreateLottery {
 
 message MsgCreateLotteryResponse {
   string lotteryIndex = 1;
+}
+
+message MsgBidToLottery {
+  string creator = 1;
+  uint64 lotteryId = 2;
+  uint64 bidAmount = 3;
+  uint64 bidCount = 4;
+}
+
+message MsgBidToLotteryResponse {
+  string bidId = 1;
+  uint64 bidCount=2;
 }
 
 // this line is used by starport scaffolding # proto/tx/message

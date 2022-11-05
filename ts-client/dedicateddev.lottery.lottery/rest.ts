@@ -9,6 +9,11 @@
  * ---------------------------------------------------------------
  */
 
+export interface LotteryMsgBidToLotteryResponse {
+  /** @format uint64 */
+  bidId?: string;
+}
+
 export interface LotteryMsgCreateLotteryResponse {
   lotteryIndex?: string;
 }

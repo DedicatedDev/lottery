@@ -7,10 +7,17 @@ import { msgTypes } from './registry';
 import { IgniteClient } from "../client"
 import { MissingWalletError } from "../helpers"
 import { Api } from "./rest";
+import { MsgBidToLottery } from "./types/lottery/lottery/tx";
 import { MsgCreateLottery } from "./types/lottery/lottery/tx";
 
 
-export { MsgCreateLottery };
+export { MsgBidToLottery, MsgCreateLottery };
+
+type sendMsgBidToLotteryParams = {
+  value: MsgBidToLottery,
+  fee?: StdFee,
+  memo?: string
+};
 
 type sendMsgCreateLotteryParams = {
   value: MsgCreateLottery,
@@ -18,6 +25,10 @@ type sendMsgCreateLotteryParams = {
   memo?: string
 };
 
+
+type msgBidToLotteryParams = {
+  value: MsgBidToLottery,
+};
 
 type msgCreateLotteryParams = {
   value: MsgCreateLottery,
@@ -41,6 +52,20 @@ export const txClient = ({ signer, prefix, addr }: TxClientOptions = { addr: "ht
 
   return {
 		
+		async sendMsgBidToLottery({ value, fee, memo }: sendMsgBidToLotteryParams): Promise<DeliverTxResponse> {
+			if (!signer) {
+					throw new Error('TxClient:sendMsgBidToLottery: Unable to sign Tx. Signer is not present.')
+			}
+			try {			
+				const { address } = (await signer.getAccounts())[0]; 
+				const signingClient = await SigningStargateClient.connectWithSigner(addr,signer,{registry, prefix});
+				let msg = this.msgBidToLottery({ value: MsgBidToLottery.fromPartial(value) })
+				return await signingClient.signAndBroadcast(address, [msg], fee ? fee : defaultFee, memo)
+			} catch (e: any) {
+				throw new Error('TxClient:sendMsgBidToLottery: Could not broadcast Tx: '+ e.message)
+			}
+		},
+		
 		async sendMsgCreateLottery({ value, fee, memo }: sendMsgCreateLotteryParams): Promise<DeliverTxResponse> {
 			if (!signer) {
 					throw new Error('TxClient:sendMsgCreateLottery: Unable to sign Tx. Signer is not present.')
@@ -55,6 +80,14 @@ export const txClient = ({ signer, prefix, addr }: TxClientOptions = { addr: "ht
 			}
 		},
 		
+		
+		msgBidToLottery({ value }: msgBidToLotteryParams): EncodeObject {
+			try {
+				return { typeUrl: "/dedicateddev.lottery.lottery.MsgBidToLottery", value: MsgBidToLottery.fromPartial( value ) }  
+			} catch (e: any) {
+				throw new Error('TxClient:MsgBidToLottery: Could not create message: ' + e.message)
+			}
+		},
 		
 		msgCreateLottery({ value }: msgCreateLotteryParams): EncodeObject {
 			try {

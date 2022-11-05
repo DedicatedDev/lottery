@@ -135,3 +135,9 @@ func TestValidateBid(t *testing.T) {
 	err = storedBid.ValidateBid()
 	require.Equal(t, err, types.ErrInvalidBetAmount)
 }
+
+func TestGenValidBidIndex(t *testing.T) {
+	hash, err := types.GenValidBidIndex(alice, 1)
+	require.Nil(t, err)
+	fmt.Println(hash)
+}

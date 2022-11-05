@@ -14,6 +14,17 @@ export interface MsgCreateLotteryResponse {
   lotteryIndex: string;
 }
 
+export interface MsgBidToLottery {
+  creator: string;
+  lotteryId: number;
+  bidAmount: number;
+  bidCount: number;
+}
+
+export interface MsgBidToLotteryResponse {
+  bidId: number;
+}
+
 function createBaseMsgCreateLottery(): MsgCreateLottery {
   return { creator: "", mintBetAmount: 0, fee: 0 };
 }
@@ -128,10 +139,134 @@ export const MsgCreateLotteryResponse = {
   },
 };
 
+function createBaseMsgBidToLottery(): MsgBidToLottery {
+  return { creator: "", lotteryId: 0, bidAmount: 0, bidCount: 0 };
+}
+
+export const MsgBidToLottery = {
+  encode(message: MsgBidToLottery, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.creator !== "") {
+      writer.uint32(10).string(message.creator);
+    }
+    if (message.lotteryId !== 0) {
+      writer.uint32(16).uint64(message.lotteryId);
+    }
+    if (message.bidAmount !== 0) {
+      writer.uint32(24).uint64(message.bidAmount);
+    }
+    if (message.bidCount !== 0) {
+      writer.uint32(32).uint64(message.bidCount);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): MsgBidToLottery {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseMsgBidToLottery();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.creator = reader.string();
+          break;
+        case 2:
+          message.lotteryId = longToNumber(reader.uint64() as Long);
+          break;
+        case 3:
+          message.bidAmount = longToNumber(reader.uint64() as Long);
+          break;
+        case 4:
+          message.bidCount = longToNumber(reader.uint64() as Long);
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): MsgBidToLottery {
+    return {
+      creator: isSet(object.creator) ? String(object.creator) : "",
+      lotteryId: isSet(object.lotteryId) ? Number(object.lotteryId) : 0,
+      bidAmount: isSet(object.bidAmount) ? Number(object.bidAmount) : 0,
+      bidCount: isSet(object.bidCount) ? Number(object.bidCount) : 0,
+    };
+  },
+
+  toJSON(message: MsgBidToLottery): unknown {
+    const obj: any = {};
+    message.creator !== undefined && (obj.creator = message.creator);
+    message.lotteryId !== undefined && (obj.lotteryId = Math.round(message.lotteryId));
+    message.bidAmount !== undefined && (obj.bidAmount = Math.round(message.bidAmount));
+    message.bidCount !== undefined && (obj.bidCount = Math.round(message.bidCount));
+    return obj;
+  },
+
+  fromPartial<I extends Exact<DeepPartial<MsgBidToLottery>, I>>(object: I): MsgBidToLottery {
+    const message = createBaseMsgBidToLottery();
+    message.creator = object.creator ?? "";
+    message.lotteryId = object.lotteryId ?? 0;
+    message.bidAmount = object.bidAmount ?? 0;
+    message.bidCount = object.bidCount ?? 0;
+    return message;
+  },
+};
+
+function createBaseMsgBidToLotteryResponse(): MsgBidToLotteryResponse {
+  return { bidId: 0 };
+}
+
+export const MsgBidToLotteryResponse = {
+  encode(message: MsgBidToLotteryResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.bidId !== 0) {
+      writer.uint32(8).uint64(message.bidId);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): MsgBidToLotteryResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseMsgBidToLotteryResponse();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.bidId = longToNumber(reader.uint64() as Long);
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): MsgBidToLotteryResponse {
+    return { bidId: isSet(object.bidId) ? Number(object.bidId) : 0 };
+  },
+
+  toJSON(message: MsgBidToLotteryResponse): unknown {
+    const obj: any = {};
+    message.bidId !== undefined && (obj.bidId = Math.round(message.bidId));
+    return obj;
+  },
+
+  fromPartial<I extends Exact<DeepPartial<MsgBidToLotteryResponse>, I>>(object: I): MsgBidToLotteryResponse {
+    const message = createBaseMsgBidToLotteryResponse();
+    message.bidId = object.bidId ?? 0;
+    return message;
+  },
+};
+
 /** Msg defines the Msg service. */
 export interface Msg {
-  /** this line is used by starport scaffolding # proto/tx/rpc */
   CreateLottery(request: MsgCreateLottery): Promise<MsgCreateLotteryResponse>;
+  /** this line is used by starport scaffolding # proto/tx/rpc */
+  BidToLottery(request: MsgBidToLottery): Promise<MsgBidToLotteryResponse>;
 }
 
 export class MsgClientImpl implements Msg {
@@ -139,11 +274,18 @@ export class MsgClientImpl implements Msg {
   constructor(rpc: Rpc) {
     this.rpc = rpc;
     this.CreateLottery = this.CreateLottery.bind(this);
+    this.BidToLottery = this.BidToLottery.bind(this);
   }
   CreateLottery(request: MsgCreateLottery): Promise<MsgCreateLotteryResponse> {
     const data = MsgCreateLottery.encode(request).finish();
     const promise = this.rpc.request("dedicateddev.lottery.lottery.Msg", "CreateLottery", data);
     return promise.then((data) => MsgCreateLotteryResponse.decode(new _m0.Reader(data)));
+  }
+
+  BidToLottery(request: MsgBidToLottery): Promise<MsgBidToLotteryResponse> {
+    const data = MsgBidToLottery.encode(request).finish();
+    const promise = this.rpc.request("dedicateddev.lottery.lottery.Msg", "BidToLottery", data);
+    return promise.then((data) => MsgBidToLotteryResponse.decode(new _m0.Reader(data)));
   }
 }
 

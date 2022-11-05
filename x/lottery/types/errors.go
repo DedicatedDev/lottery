@@ -15,4 +15,6 @@ var (
 	ErrInvalidBetAmount = sdkerrors.Register(ModuleName, 1104, "invalid bet amount")
 	ErrInvalidFeeAmount = sdkerrors.Register(ModuleName, 1105, "invalid fee amount")
 	ErrInvalidBid       = sdkerrors.Register(ModuleName, 1106, "invalid bid")
+	ErrLotteryNotFound  = sdkerrors.Register(ModuleName, 1107, "lottery by id not found")
+	ErrBidNotEnoughFund = sdkerrors.Register(ModuleName, 1108, "bid hasn't enough fund!")
 )

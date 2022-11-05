@@ -34395,6 +34395,7 @@ paths:
                   properties:
                     index:
                       type: string
+                      format: uint64
                     bidCount:
                       type: string
                       format: uint64
@@ -34524,6 +34525,7 @@ paths:
                 properties:
                   index:
                     type: string
+                    format: uint64
                   bidCount:
                     type: string
                     format: uint64
@@ -70791,6 +70793,12 @@ definitions:
             NOTE: The amount field is an Int which implements the custom method
             signatures required by gogoproto.
     description: Period defines a length of time and amount of coins that will vest.
+  dedicateddev.lottery.lottery.MsgBidToLotteryResponse:
+    type: object
+    properties:
+      bidId:
+        type: string
+        format: uint64
   dedicateddev.lottery.lottery.MsgCreateLotteryResponse:
     type: object
     properties:
@@ -70853,6 +70861,7 @@ definitions:
           properties:
             index:
               type: string
+              format: uint64
             bidCount:
               type: string
               format: uint64
@@ -70912,6 +70921,7 @@ definitions:
         properties:
           index:
             type: string
+            format: uint64
           bidCount:
             type: string
             format: uint64
@@ -70955,6 +70965,7 @@ definitions:
     properties:
       index:
         type: string
+        format: uint64
       bidCount:
         type: string
         format: uint64

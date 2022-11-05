@@ -300,6 +300,19 @@ export default {
 				}
 			}
 		},
+		async sendMsgBidToLottery({ rootGetters }, { value, fee = [], memo = '' }) {
+			try {
+				const client=await initClient(rootGetters)
+				const result = await client.DedicateddevLotteryLottery.tx.sendMsgBidToLottery({ value, fee: {amount: fee, gas: "200000"}, memo })
+				return result
+			} catch (e) {
+				if (e == MissingWalletError) {
+					throw new Error('TxClient:MsgBidToLottery:Init Could not initialize signing client. Wallet is required.')
+				}else{
+					throw new Error('TxClient:MsgBidToLottery:Send Could not broadcast Tx: '+ e.message)
+				}
+			}
+		},
 		
 		async MsgCreateLottery({ rootGetters }, { value }) {
 			try {
@@ -311,6 +324,19 @@ export default {
 					throw new Error('TxClient:MsgCreateLottery:Init Could not initialize signing client. Wallet is required.')
 				} else{
 					throw new Error('TxClient:MsgCreateLottery:Create Could not create message: ' + e.message)
+				}
+			}
+		},
+		async MsgBidToLottery({ rootGetters }, { value }) {
+			try {
+				const client=initClient(rootGetters)
+				const msg = await client.DedicateddevLotteryLottery.tx.msgBidToLottery({value})
+				return msg
+			} catch (e) {
+				if (e == MissingWalletError) {
+					throw new Error('TxClient:MsgBidToLottery:Init Could not initialize signing client. Wallet is required.')
+				} else{
+					throw new Error('TxClient:MsgBidToLottery:Create Could not create message: ' + e.message)
 				}
 			}
 		},
