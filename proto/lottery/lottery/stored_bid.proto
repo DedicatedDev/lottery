@@ -1,0 +1,12 @@
+syntax = "proto3";
+package dedicateddev.lottery.lottery;
+
+option go_package = "github.com/DedicatedDev/lottery/x/lottery/types";
+
+message StoredBid {
+  string index = 1; 
+  uint64 lotteryId = 2;
+  uint64 betAmount = 3; 
+  string bidder = 4;
+}
+

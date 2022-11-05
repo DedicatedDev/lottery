@@ -5,6 +5,9 @@ import "gogoproto/gogo.proto";
 import "google/api/annotations.proto";
 import "cosmos/base/query/v1beta1/pagination.proto";
 import "lottery/lottery/params.proto";
+import "lottery/lottery/system_info.proto";
+import "lottery/lottery/stored_lottery.proto";
+import "lottery/lottery/stored_bid.proto";
 // this line is used by starport scaffolding # 1
 
 option go_package = "github.com/DedicatedDev/lottery/x/lottery/types";
@@ -15,7 +18,31 @@ service Query {
   rpc Params(QueryParamsRequest) returns (QueryParamsResponse) {
     option (google.api.http).get = "/DedicatedDev/lottery/lottery/params";
   }
-  // this line is used by starport scaffolding # 2
+  // Queries a SystemInfo by index.
+	rpc SystemInfo(QueryGetSystemInfoRequest) returns (QueryGetSystemInfoResponse) {
+		option (google.api.http).get = "/DedicatedDev/lottery/lottery/system_info";
+	}
+// Queries a StoredLottery by index.
+	rpc StoredLottery(QueryGetStoredLotteryRequest) returns (QueryGetStoredLotteryResponse) {
+		option (google.api.http).get = "/DedicatedDev/lottery/lottery/stored_lottery/{index}";
+	}
+
+	// Queries a list of StoredLottery items.
+	rpc StoredLotteryAll(QueryAllStoredLotteryRequest) returns (QueryAllStoredLotteryResponse) {
+		option (google.api.http).get = "/DedicatedDev/lottery/lottery/stored_lottery";
+	}
+
+// Queries a StoredBid by index.
+	rpc StoredBid(QueryGetStoredBidRequest) returns (QueryGetStoredBidResponse) {
+		option (google.api.http).get = "/DedicatedDev/lottery/lottery/stored_bid/{index}";
+	}
+
+	// Queries a list of StoredBid items.
+	rpc StoredBidAll(QueryAllStoredBidRequest) returns (QueryAllStoredBidResponse) {
+		option (google.api.http).get = "/DedicatedDev/lottery/lottery/stored_bid";
+	}
+
+// this line is used by starport scaffolding # 2
 }
 
 // QueryParamsRequest is request type for the Query/Params RPC method.
@@ -25,6 +52,47 @@ message QueryParamsRequest {}
 message QueryParamsResponse {
   // params holds all the parameters of this module.
   Params params = 1 [(gogoproto.nullable) = false];
+}
+
+message QueryGetSystemInfoRequest {}
+
+message QueryGetSystemInfoResponse {
+	SystemInfo SystemInfo = 1 [(gogoproto.nullable) = false];
+}
+message QueryGetStoredLotteryRequest {
+	  string index = 1;
+
+}
+
+message QueryGetStoredLotteryResponse {
+	StoredLottery storedLottery = 1 [(gogoproto.nullable) = false];
+}
+
+message QueryAllStoredLotteryRequest {
+	cosmos.base.query.v1beta1.PageRequest pagination = 1;
+}
+
+message QueryAllStoredLotteryResponse {
+	repeated StoredLottery storedLottery = 1 [(gogoproto.nullable) = false];
+	cosmos.base.query.v1beta1.PageResponse pagination = 2;
+}
+
+message QueryGetStoredBidRequest {
+	  string index = 1;
+
+}
+
+message QueryGetStoredBidResponse {
+	StoredBid storedBid = 1 [(gogoproto.nullable) = false];
+}
+
+message QueryAllStoredBidRequest {
+	cosmos.base.query.v1beta1.PageRequest pagination = 1;
+}
+
+message QueryAllStoredBidResponse {
+	repeated StoredBid storedBid = 1 [(gogoproto.nullable) = false];
+	cosmos.base.query.v1beta1.PageResponse pagination = 2;
 }
 
 // this line is used by starport scaffolding # 3

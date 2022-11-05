@@ -3,6 +3,9 @@ package dedicateddev.lottery.lottery;
 
 import "gogoproto/gogo.proto";
 import "lottery/lottery/params.proto";
+import "lottery/lottery/system_info.proto";
+import "lottery/lottery/stored_lottery.proto";
+import "lottery/lottery/stored_bid.proto";
 // this line is used by starport scaffolding # genesis/proto/import
 
 option go_package = "github.com/DedicatedDev/lottery/x/lottery/types";
@@ -10,5 +13,8 @@ option go_package = "github.com/DedicatedDev/lottery/x/lottery/types";
 // GenesisState defines the lottery module's genesis state.
 message GenesisState {
   Params params = 1 [(gogoproto.nullable) = false];
+  SystemInfo systemInfo = 2 [(gogoproto.nullable) = false];
+  repeated StoredLottery storedLotteryList = 3 [(gogoproto.nullable) = false];
+  repeated StoredBid storedBidList = 4 [(gogoproto.nullable) = false];
   // this line is used by starport scaffolding # genesis/proto/state
 }

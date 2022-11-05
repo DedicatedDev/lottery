@@ -14,12 +14,76 @@
  */
 export type LotteryParams = object;
 
+export interface LotteryQueryAllStoredBidResponse {
+  storedBid?: LotteryStoredBid[];
+
+  /**
+   * PageResponse is to be embedded in gRPC response messages where the
+   * corresponding request message has used PageRequest.
+   *
+   *  message SomeResponse {
+   *          repeated Bar results = 1;
+   *          PageResponse page = 2;
+   *  }
+   */
+  pagination?: V1Beta1PageResponse;
+}
+
+export interface LotteryQueryAllStoredLotteryResponse {
+  storedLottery?: LotteryStoredLottery[];
+
+  /**
+   * PageResponse is to be embedded in gRPC response messages where the
+   * corresponding request message has used PageRequest.
+   *
+   *  message SomeResponse {
+   *          repeated Bar results = 1;
+   *          PageResponse page = 2;
+   *  }
+   */
+  pagination?: V1Beta1PageResponse;
+}
+
+export interface LotteryQueryGetStoredBidResponse {
+  storedBid?: LotteryStoredBid;
+}
+
+export interface LotteryQueryGetStoredLotteryResponse {
+  storedLottery?: LotteryStoredLottery;
+}
+
+export interface LotteryQueryGetSystemInfoResponse {
+  SystemInfo?: LotterySystemInfo;
+}
+
 /**
  * QueryParamsResponse is response type for the Query/Params RPC method.
  */
 export interface LotteryQueryParamsResponse {
   /** params holds all the parameters of this module. */
   params?: LotteryParams;
+}
+
+export interface LotteryStoredBid {
+  index?: string;
+
+  /** @format uint64 */
+  betAmount?: string;
+}
+
+export interface LotteryStoredLottery {
+  index?: string;
+
+  /** @format uint64 */
+  bidCount?: string;
+
+  /** @format uint64 */
+  fee?: string;
+}
+
+export interface LotterySystemInfo {
+  /** @format uint64 */
+  nextId?: string;
 }
 
 export interface ProtobufAny {
@@ -31,6 +95,78 @@ export interface RpcStatus {
   code?: number;
   message?: string;
   details?: ProtobufAny[];
+}
+
+/**
+* message SomeRequest {
+         Foo some_parameter = 1;
+         PageRequest pagination = 2;
+ }
+*/
+export interface V1Beta1PageRequest {
+  /**
+   * key is a value returned in PageResponse.next_key to begin
+   * querying the next page most efficiently. Only one of offset or key
+   * should be set.
+   * @format byte
+   */
+  key?: string;
+
+  /**
+   * offset is a numeric offset that can be used when key is unavailable.
+   * It is less efficient than using key. Only one of offset or key should
+   * be set.
+   * @format uint64
+   */
+  offset?: string;
+
+  /**
+   * limit is the total number of results to be returned in the result page.
+   * If left empty it will default to a value to be set by each app.
+   * @format uint64
+   */
+  limit?: string;
+
+  /**
+   * count_total is set to true  to indicate that the result set should include
+   * a count of the total number of items available for pagination in UIs.
+   * count_total is only respected when offset is used. It is ignored when key
+   * is set.
+   */
+  count_total?: boolean;
+
+  /**
+   * reverse is set to true if results are to be returned in the descending order.
+   *
+   * Since: cosmos-sdk 0.43
+   */
+  reverse?: boolean;
+}
+
+/**
+* PageResponse is to be embedded in gRPC response messages where the
+corresponding request message has used PageRequest.
+
+ message SomeResponse {
+         repeated Bar results = 1;
+         PageResponse page = 2;
+ }
+*/
+export interface V1Beta1PageResponse {
+  /**
+   * next_key is the key to be passed to PageRequest.key to
+   * query the next page most efficiently. It will be empty if
+   * there are no more results.
+   * @format byte
+   */
+  next_key?: string;
+
+  /**
+   * total is total number of results available if PageRequest.count_total
+   * was set, its value is undefined otherwise
+   * @format uint64
+   */
+  total?: string;
 }
 
 import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse, ResponseType } from "axios";
@@ -169,6 +305,106 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
   queryParams = (params: RequestParams = {}) =>
     this.request<LotteryQueryParamsResponse, RpcStatus>({
       path: `/DedicatedDev/lottery/lottery/params`,
+      method: "GET",
+      format: "json",
+      ...params,
+    });
+
+  /**
+   * No description
+   *
+   * @tags Query
+   * @name QueryStoredBidAll
+   * @summary Queries a list of StoredBid items.
+   * @request GET:/DedicatedDev/lottery/lottery/stored_bid
+   */
+  queryStoredBidAll = (
+    query?: {
+      "pagination.key"?: string;
+      "pagination.offset"?: string;
+      "pagination.limit"?: string;
+      "pagination.count_total"?: boolean;
+      "pagination.reverse"?: boolean;
+    },
+    params: RequestParams = {},
+  ) =>
+    this.request<LotteryQueryAllStoredBidResponse, RpcStatus>({
+      path: `/DedicatedDev/lottery/lottery/stored_bid`,
+      method: "GET",
+      query: query,
+      format: "json",
+      ...params,
+    });
+
+  /**
+   * No description
+   *
+   * @tags Query
+   * @name QueryStoredBid
+   * @summary Queries a StoredBid by index.
+   * @request GET:/DedicatedDev/lottery/lottery/stored_bid/{index}
+   */
+  queryStoredBid = (index: string, params: RequestParams = {}) =>
+    this.request<LotteryQueryGetStoredBidResponse, RpcStatus>({
+      path: `/DedicatedDev/lottery/lottery/stored_bid/${index}`,
+      method: "GET",
+      format: "json",
+      ...params,
+    });
+
+  /**
+   * No description
+   *
+   * @tags Query
+   * @name QueryStoredLotteryAll
+   * @summary Queries a list of StoredLottery items.
+   * @request GET:/DedicatedDev/lottery/lottery/stored_lottery
+   */
+  queryStoredLotteryAll = (
+    query?: {
+      "pagination.key"?: string;
+      "pagination.offset"?: string;
+      "pagination.limit"?: string;
+      "pagination.count_total"?: boolean;
+      "pagination.reverse"?: boolean;
+    },
+    params: RequestParams = {},
+  ) =>
+    this.request<LotteryQueryAllStoredLotteryResponse, RpcStatus>({
+      path: `/DedicatedDev/lottery/lottery/stored_lottery`,
+      method: "GET",
+      query: query,
+      format: "json",
+      ...params,
+    });
+
+  /**
+   * No description
+   *
+   * @tags Query
+   * @name QueryStoredLottery
+   * @summary Queries a StoredLottery by index.
+   * @request GET:/DedicatedDev/lottery/lottery/stored_lottery/{index}
+   */
+  queryStoredLottery = (index: string, params: RequestParams = {}) =>
+    this.request<LotteryQueryGetStoredLotteryResponse, RpcStatus>({
+      path: `/DedicatedDev/lottery/lottery/stored_lottery/${index}`,
+      method: "GET",
+      format: "json",
+      ...params,
+    });
+
+  /**
+   * No description
+   *
+   * @tags Query
+   * @name QuerySystemInfo
+   * @summary Queries a SystemInfo by index.
+   * @request GET:/DedicatedDev/lottery/lottery/system_info
+   */
+  querySystemInfo = (params: RequestParams = {}) =>
+    this.request<LotteryQueryGetSystemInfoResponse, RpcStatus>({
+      path: `/DedicatedDev/lottery/lottery/system_info`,
       method: "GET",
       format: "json",
       ...params,

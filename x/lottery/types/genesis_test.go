@@ -19,12 +19,59 @@ func TestGenesisState_Validate(t *testing.T) {
 			valid:    true,
 		},
 		{
-			desc:     "valid genesis state",
+			desc: "valid genesis state",
 			genState: &types.GenesisState{
 
+				SystemInfo: types.SystemInfo{
+					NextId: 57,
+				},
+				StoredLotteryList: []types.StoredLottery{
+					{
+						Index: "0",
+					},
+					{
+						Index: "1",
+					},
+				},
+				StoredBidList: []types.StoredBid{
+					{
+						Index: "0",
+					},
+					{
+						Index: "1",
+					},
+				},
 				// this line is used by starport scaffolding # types/genesis/validField
 			},
 			valid: true,
+		},
+		{
+			desc: "duplicated storedLottery",
+			genState: &types.GenesisState{
+				StoredLotteryList: []types.StoredLottery{
+					{
+						Index: "0",
+					},
+					{
+						Index: "0",
+					},
+				},
+			},
+			valid: false,
+		},
+		{
+			desc: "duplicated storedBid",
+			genState: &types.GenesisState{
+				StoredBidList: []types.StoredBid{
+					{
+						Index: "0",
+					},
+					{
+						Index: "0",
+					},
+				},
+			},
+			valid: false,
 		},
 		// this line is used by starport scaffolding # types/genesis/testcase
 	} {
