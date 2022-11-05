@@ -14,7 +14,7 @@ service Msg {
 
 message MsgCreateLottery {
   string creator = 1;
-  uint64 mintBetAmount = 2;
+  uint64 minBetAmount = 2;
   uint64 fee = 3;
 }
 

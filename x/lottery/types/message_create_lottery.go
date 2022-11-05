@@ -11,9 +11,9 @@ var _ sdk.Msg = &MsgCreateLottery{}
 
 func NewMsgCreateLottery(creator string, mintBetAmount uint64, fee uint64) *MsgCreateLottery {
 	return &MsgCreateLottery{
-		Creator:       creator,
-		MintBetAmount: mintBetAmount,
-		Fee:           fee,
+		Creator:      creator,
+		MinBetAmount: mintBetAmount,
+		Fee:          fee,
 	}
 }
 

@@ -43,6 +43,13 @@ func (k msgServer) BidToLottery(goCtx context.Context, msg *types.MsgBidToLotter
 		storedLottery.BidCount++
 	}
 	k.SetStoredLottery(ctx, storedLottery)
+	ctx.EventManager().EmitEvent(sdk.NewEvent(
+		types.BidCreatedEventType,
+		sdk.NewAttribute(types.BidCreatedEventTypeCreator, msg.Creator),
+		sdk.NewAttribute(types.BidCreatedEventTypeBidId, newBidId),
+		sdk.NewAttribute(types.BidCreatedEventTypeLotteryId, fmt.Sprintf("%d", msg.LotteryId)),
+		sdk.NewAttribute(types.BidCreatedEventTypeBidCount, fmt.Sprintf("%d", storedLottery.BidCount)),
+	))
 	return &types.MsgBidToLotteryResponse{
 		BidId:    newBidId,
 		BidCount: storedLottery.BidCount,

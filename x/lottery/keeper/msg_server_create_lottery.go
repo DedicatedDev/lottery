@@ -2,6 +2,7 @@ package keeper
 
 import (
 	"context"
+	"fmt"
 	"strconv"
 
 	"github.com/DedicatedDev/lottery/x/lottery/types"
@@ -18,7 +19,7 @@ func (k msgServer) CreateLottery(goCtx context.Context, msg *types.MsgCreateLott
 	storedLottery := types.StoredLottery{
 		Index:        newIndex,
 		BidCount:     0,
-		MinBetAmount: msg.MintBetAmount,
+		MinBetAmount: msg.MinBetAmount,
 		Fee:          msg.Fee,
 	}
 	err := storedLottery.ValidateLottery()
@@ -28,6 +29,13 @@ func (k msgServer) CreateLottery(goCtx context.Context, msg *types.MsgCreateLott
 	k.Keeper.SetStoredLottery(ctx, storedLottery)
 	systemInfo.NextId++
 	k.Keeper.SetSystemInfo(ctx, systemInfo)
+	ctx.EventManager().EmitEvent(sdk.NewEvent(
+		types.LotteryCreatedEventType,
+		sdk.NewAttribute(types.LotteryCreatedEventTypeCreator, msg.Creator),
+		sdk.NewAttribute(types.LotteryCreatedEventTypeLotteryId, newIndex),
+		sdk.NewAttribute(types.LotteryCreatedEventTypeLotteryMinBetAmount, fmt.Sprintf("%d", msg.MinBetAmount)),
+		sdk.NewAttribute(types.LotteryCreatedEventTypeLotteryFee, fmt.Sprintf("%d", msg.Fee)),
+	))
 	return &types.MsgCreateLotteryResponse{
 		LotteryIndex: newIndex,
 	}, nil

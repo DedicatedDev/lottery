@@ -2,6 +2,7 @@ package keeper_test
 
 import (
 	"context"
+	"fmt"
 	"testing"
 
 	keepertest "github.com/DedicatedDev/lottery/testutil/keeper"
@@ -28,9 +29,9 @@ func setupMsgServerCreateLottery(t testing.TB) (types.MsgServer, keeper.Keeper, 
 func TestCreateLottery(t *testing.T) {
 	msgServer, _, context := setupMsgServerCreateLottery(t)
 	createResponse, err := msgServer.CreateLottery(context, &types.MsgCreateLottery{
-		Creator:       alice,
-		MintBetAmount: DefaultMinBetAmount,
-		Fee:           DefaultFee,
+		Creator:      alice,
+		MinBetAmount: DefaultMinBetAmount,
+		Fee:          DefaultFee,
 	})
 	require.Nil(t, err)
 	require.EqualValues(t, types.MsgCreateLotteryResponse{
@@ -41,9 +42,9 @@ func TestCreateLottery(t *testing.T) {
 func TestCreate1LotteryHasSaved(t *testing.T) {
 	msgSrvr, keeper, context := setupMsgServerCreateLottery(t)
 	msgSrvr.CreateLottery(context, &types.MsgCreateLottery{
-		Creator:       alice,
-		MintBetAmount: DefaultMinBetAmount,
-		Fee:           DefaultFee,
+		Creator:      alice,
+		MinBetAmount: DefaultMinBetAmount,
+		Fee:          DefaultFee,
 	})
 	systemInfo, found := keeper.GetSystemInfo(sdk.UnwrapSDKContext(context))
 	require.True(t, found)
@@ -58,4 +59,27 @@ func TestCreate1LotteryHasSaved(t *testing.T) {
 		MinBetAmount: DefaultMinBetAmount,
 		Fee:          DefaultFee,
 	}, game1)
+}
+
+func TestCreate1GameEmitted(t *testing.T) {
+	msgServer, _, context := setupMsgServerCreateLottery(t)
+	msgServer.CreateLottery(context, &types.MsgCreateLottery{
+		Creator:      bob,
+		MinBetAmount: DefaultMinBetAmount,
+		Fee:          DefaultFee,
+	})
+	ctx := sdk.UnwrapSDKContext(context)
+	require.NotNil(t, ctx)
+	events := sdk.StringifyEvents(ctx.EventManager().ABCIEvents())
+	require.Len(t, events, 1)
+	event := events[0]
+	require.EqualValues(t, sdk.StringEvent{
+		Type: "new-lottery-created",
+		Attributes: []sdk.Attribute{
+			{Key: "creator", Value: bob},
+			{Key: "lottery-id", Value: "1"},
+			{Key: "min-bet-amount", Value: fmt.Sprintf("%d", DefaultMinBetAmount)},
+			{Key: "fee", Value: fmt.Sprintf("%d", DefaultFee)},
+		},
+	}, event)
 }

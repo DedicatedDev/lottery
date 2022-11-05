@@ -21,3 +21,19 @@ func KeyPrefix(p string) []byte {
 const (
 	SystemInfoKey = "SystemInfo/value/"
 )
+
+const (
+	LotteryCreatedEventType                    = "new-lottery-created"
+	LotteryCreatedEventTypeCreator             = "creator"
+	LotteryCreatedEventTypeLotteryId           = "lottery-id"
+	LotteryCreatedEventTypeLotteryMinBetAmount = "min-bet-amount"
+	LotteryCreatedEventTypeLotteryFee          = "fee"
+)
+
+const (
+	BidCreatedEventType          = "new-bid-created"
+	BidCreatedEventTypeCreator   = "creator"
+	BidCreatedEventTypeBidId     = "bid-id"
+	BidCreatedEventTypeLotteryId = "lottery-id"
+	BidCreatedEventTypeBidCount  = "total-bidder"
+)
