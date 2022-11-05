@@ -34217,9 +34217,14 @@ paths:
                   properties:
                     index:
                       type: string
+                    lotteryId:
+                      type: string
+                      format: uint64
                     betAmount:
                       type: string
                       format: uint64
+                    bidder:
+                      type: string
               pagination:
                 type: object
                 properties:
@@ -34340,9 +34345,14 @@ paths:
                 properties:
                   index:
                     type: string
+                  lotteryId:
+                    type: string
+                    format: uint64
                   betAmount:
                     type: string
                     format: uint64
+                  bidder:
+                    type: string
         default:
           description: An unexpected error response.
           schema:
@@ -34386,6 +34396,9 @@ paths:
                     index:
                       type: string
                     bidCount:
+                      type: string
+                      format: uint64
+                    minBetAmount:
                       type: string
                       format: uint64
                     fee:
@@ -34512,6 +34525,9 @@ paths:
                   index:
                     type: string
                   bidCount:
+                    type: string
+                    format: uint64
+                  minBetAmount:
                     type: string
                     format: uint64
                   fee:
@@ -70775,6 +70791,11 @@ definitions:
             NOTE: The amount field is an Int which implements the custom method
             signatures required by gogoproto.
     description: Period defines a length of time and amount of coins that will vest.
+  dedicateddev.lottery.lottery.MsgCreateLotteryResponse:
+    type: object
+    properties:
+      lotteryIndex:
+        type: string
   dedicateddev.lottery.lottery.Params:
     type: object
     description: Params defines the parameters for the module.
@@ -70788,9 +70809,14 @@ definitions:
           properties:
             index:
               type: string
+            lotteryId:
+              type: string
+              format: uint64
             betAmount:
               type: string
               format: uint64
+            bidder:
+              type: string
       pagination:
         type: object
         properties:
@@ -70830,6 +70856,9 @@ definitions:
             bidCount:
               type: string
               format: uint64
+            minBetAmount:
+              type: string
+              format: uint64
             fee:
               type: string
               format: uint64
@@ -70867,9 +70896,14 @@ definitions:
         properties:
           index:
             type: string
+          lotteryId:
+            type: string
+            format: uint64
           betAmount:
             type: string
             format: uint64
+          bidder:
+            type: string
   dedicateddev.lottery.lottery.QueryGetStoredLotteryResponse:
     type: object
     properties:
@@ -70879,6 +70913,9 @@ definitions:
           index:
             type: string
           bidCount:
+            type: string
+            format: uint64
+          minBetAmount:
             type: string
             format: uint64
           fee:
@@ -70905,15 +70942,23 @@ definitions:
     properties:
       index:
         type: string
+      lotteryId:
+        type: string
+        format: uint64
       betAmount:
         type: string
         format: uint64
+      bidder:
+        type: string
   dedicateddev.lottery.lottery.StoredLottery:
     type: object
     properties:
       index:
         type: string
       bidCount:
+        type: string
+        format: uint64
+      minBetAmount:
         type: string
         format: uint64
       fee:

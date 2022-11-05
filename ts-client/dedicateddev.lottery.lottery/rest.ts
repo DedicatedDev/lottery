@@ -9,6 +9,10 @@
  * ---------------------------------------------------------------
  */
 
+export interface LotteryMsgCreateLotteryResponse {
+  lotteryIndex?: string;
+}
+
 /**
  * Params defines the parameters for the module.
  */
@@ -68,7 +72,11 @@ export interface LotteryStoredBid {
   index?: string;
 
   /** @format uint64 */
+  lotteryId?: string;
+
+  /** @format uint64 */
   betAmount?: string;
+  bidder?: string;
 }
 
 export interface LotteryStoredLottery {
@@ -76,6 +84,9 @@ export interface LotteryStoredLottery {
 
   /** @format uint64 */
   bidCount?: string;
+
+  /** @format uint64 */
+  minBetAmount?: string;
 
   /** @format uint64 */
   fee?: string;

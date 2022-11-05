@@ -6,11 +6,13 @@ export const protobufPackage = "dedicateddev.lottery.lottery";
 
 export interface StoredBid {
   index: string;
+  lotteryId: number;
   betAmount: number;
+  bidder: string;
 }
 
 function createBaseStoredBid(): StoredBid {
-  return { index: "", betAmount: 0 };
+  return { index: "", lotteryId: 0, betAmount: 0, bidder: "" };
 }
 
 export const StoredBid = {
@@ -18,8 +20,14 @@ export const StoredBid = {
     if (message.index !== "") {
       writer.uint32(10).string(message.index);
     }
+    if (message.lotteryId !== 0) {
+      writer.uint32(16).uint64(message.lotteryId);
+    }
     if (message.betAmount !== 0) {
-      writer.uint32(16).uint64(message.betAmount);
+      writer.uint32(24).uint64(message.betAmount);
+    }
+    if (message.bidder !== "") {
+      writer.uint32(34).string(message.bidder);
     }
     return writer;
   },
@@ -35,7 +43,13 @@ export const StoredBid = {
           message.index = reader.string();
           break;
         case 2:
+          message.lotteryId = longToNumber(reader.uint64() as Long);
+          break;
+        case 3:
           message.betAmount = longToNumber(reader.uint64() as Long);
+          break;
+        case 4:
+          message.bidder = reader.string();
           break;
         default:
           reader.skipType(tag & 7);
@@ -48,21 +62,27 @@ export const StoredBid = {
   fromJSON(object: any): StoredBid {
     return {
       index: isSet(object.index) ? String(object.index) : "",
+      lotteryId: isSet(object.lotteryId) ? Number(object.lotteryId) : 0,
       betAmount: isSet(object.betAmount) ? Number(object.betAmount) : 0,
+      bidder: isSet(object.bidder) ? String(object.bidder) : "",
     };
   },
 
   toJSON(message: StoredBid): unknown {
     const obj: any = {};
     message.index !== undefined && (obj.index = message.index);
+    message.lotteryId !== undefined && (obj.lotteryId = Math.round(message.lotteryId));
     message.betAmount !== undefined && (obj.betAmount = Math.round(message.betAmount));
+    message.bidder !== undefined && (obj.bidder = message.bidder);
     return obj;
   },
 
   fromPartial<I extends Exact<DeepPartial<StoredBid>, I>>(object: I): StoredBid {
     const message = createBaseStoredBid();
     message.index = object.index ?? "";
+    message.lotteryId = object.lotteryId ?? 0;
     message.betAmount = object.betAmount ?? 0;
+    message.bidder = object.bidder ?? "";
     return message;
   },
 };

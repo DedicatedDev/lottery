@@ -8,6 +8,5 @@ message StoredLottery {
   uint64 bidCount = 2; 
   uint64 minBetAmount = 3;
   uint64 fee = 4; 
-  
 }
 

@@ -7,11 +7,12 @@ export const protobufPackage = "dedicateddev.lottery.lottery";
 export interface StoredLottery {
   index: string;
   bidCount: number;
+  minBetAmount: number;
   fee: number;
 }
 
 function createBaseStoredLottery(): StoredLottery {
-  return { index: "", bidCount: 0, fee: 0 };
+  return { index: "", bidCount: 0, minBetAmount: 0, fee: 0 };
 }
 
 export const StoredLottery = {
@@ -22,8 +23,11 @@ export const StoredLottery = {
     if (message.bidCount !== 0) {
       writer.uint32(16).uint64(message.bidCount);
     }
+    if (message.minBetAmount !== 0) {
+      writer.uint32(24).uint64(message.minBetAmount);
+    }
     if (message.fee !== 0) {
-      writer.uint32(24).uint64(message.fee);
+      writer.uint32(32).uint64(message.fee);
     }
     return writer;
   },
@@ -42,6 +46,9 @@ export const StoredLottery = {
           message.bidCount = longToNumber(reader.uint64() as Long);
           break;
         case 3:
+          message.minBetAmount = longToNumber(reader.uint64() as Long);
+          break;
+        case 4:
           message.fee = longToNumber(reader.uint64() as Long);
           break;
         default:
@@ -56,6 +63,7 @@ export const StoredLottery = {
     return {
       index: isSet(object.index) ? String(object.index) : "",
       bidCount: isSet(object.bidCount) ? Number(object.bidCount) : 0,
+      minBetAmount: isSet(object.minBetAmount) ? Number(object.minBetAmount) : 0,
       fee: isSet(object.fee) ? Number(object.fee) : 0,
     };
   },
@@ -64,6 +72,7 @@ export const StoredLottery = {
     const obj: any = {};
     message.index !== undefined && (obj.index = message.index);
     message.bidCount !== undefined && (obj.bidCount = Math.round(message.bidCount));
+    message.minBetAmount !== undefined && (obj.minBetAmount = Math.round(message.minBetAmount));
     message.fee !== undefined && (obj.fee = Math.round(message.fee));
     return obj;
   },
@@ -72,6 +81,7 @@ export const StoredLottery = {
     const message = createBaseStoredLottery();
     message.index = object.index ?? "";
     message.bidCount = object.bidCount ?? 0;
+    message.minBetAmount = object.minBetAmount ?? 0;
     message.fee = object.fee ?? 0;
     return message;
   },
