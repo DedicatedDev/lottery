@@ -9,12 +9,11 @@ const TypeMsgBidToLottery = "bid_to_lottery"
 
 var _ sdk.Msg = &MsgBidToLottery{}
 
-func NewMsgBidToLottery(creator string, lotteryId uint64, bidAmount uint64, bidCount uint64) *MsgBidToLottery {
+func NewMsgBidToLottery(creator string, lotteryId uint64, bidAmount uint64) *MsgBidToLottery {
 	return &MsgBidToLottery{
 		Creator:   creator,
 		LotteryId: lotteryId,
 		BidAmount: bidAmount,
-		BidCount:  bidCount,
 	}
 }
 

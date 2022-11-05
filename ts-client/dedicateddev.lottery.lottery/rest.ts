@@ -10,8 +10,10 @@
  */
 
 export interface LotteryMsgBidToLotteryResponse {
-  /** @format uint64 */
   bidId?: string;
+
+  /** @format uint64 */
+  bidCount?: string;
 }
 
 export interface LotteryMsgCreateLotteryResponse {

@@ -26,7 +26,6 @@ message MsgBidToLottery {
   string creator = 1;
   uint64 lotteryId = 2;
   uint64 bidAmount = 3;
-  uint64 bidCount = 4;
 }
 
 message MsgBidToLotteryResponse {

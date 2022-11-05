@@ -15,9 +15,9 @@ var _ = strconv.Itoa(0)
 
 func CmdBidToLottery() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "bid-to-lottery [lottery-id] [bid-amount] [bid-count]",
+		Use:   "bid-to-lottery [lottery-id] [bid-amount]",
 		Short: "Broadcast message bidToLottery",
-		Args:  cobra.ExactArgs(3),
+		Args:  cobra.ExactArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
 			argLotteryId, err := cast.ToUint64E(args[0])
 			if err != nil {
@@ -27,11 +27,6 @@ func CmdBidToLottery() *cobra.Command {
 			if err != nil {
 				return err
 			}
-			argBidCount, err := cast.ToUint64E(args[2])
-			if err != nil {
-				return err
-			}
-
 			clientCtx, err := client.GetClientTxContext(cmd)
 			if err != nil {
 				return err
@@ -41,7 +36,6 @@ func CmdBidToLottery() *cobra.Command {
 				clientCtx.GetFromAddress().String(),
 				argLotteryId,
 				argBidAmount,
-				argBidCount,
 			)
 			if err := msg.ValidateBasic(); err != nil {
 				return err

@@ -18,11 +18,11 @@ export interface MsgBidToLottery {
   creator: string;
   lotteryId: number;
   bidAmount: number;
-  bidCount: number;
 }
 
 export interface MsgBidToLotteryResponse {
-  bidId: number;
+  bidId: string;
+  bidCount: number;
 }
 
 function createBaseMsgCreateLottery(): MsgCreateLottery {
@@ -140,7 +140,7 @@ export const MsgCreateLotteryResponse = {
 };
 
 function createBaseMsgBidToLottery(): MsgBidToLottery {
-  return { creator: "", lotteryId: 0, bidAmount: 0, bidCount: 0 };
+  return { creator: "", lotteryId: 0, bidAmount: 0 };
 }
 
 export const MsgBidToLottery = {
@@ -153,9 +153,6 @@ export const MsgBidToLottery = {
     }
     if (message.bidAmount !== 0) {
       writer.uint32(24).uint64(message.bidAmount);
-    }
-    if (message.bidCount !== 0) {
-      writer.uint32(32).uint64(message.bidCount);
     }
     return writer;
   },
@@ -176,9 +173,6 @@ export const MsgBidToLottery = {
         case 3:
           message.bidAmount = longToNumber(reader.uint64() as Long);
           break;
-        case 4:
-          message.bidCount = longToNumber(reader.uint64() as Long);
-          break;
         default:
           reader.skipType(tag & 7);
           break;
@@ -192,7 +186,6 @@ export const MsgBidToLottery = {
       creator: isSet(object.creator) ? String(object.creator) : "",
       lotteryId: isSet(object.lotteryId) ? Number(object.lotteryId) : 0,
       bidAmount: isSet(object.bidAmount) ? Number(object.bidAmount) : 0,
-      bidCount: isSet(object.bidCount) ? Number(object.bidCount) : 0,
     };
   },
 
@@ -201,7 +194,6 @@ export const MsgBidToLottery = {
     message.creator !== undefined && (obj.creator = message.creator);
     message.lotteryId !== undefined && (obj.lotteryId = Math.round(message.lotteryId));
     message.bidAmount !== undefined && (obj.bidAmount = Math.round(message.bidAmount));
-    message.bidCount !== undefined && (obj.bidCount = Math.round(message.bidCount));
     return obj;
   },
 
@@ -210,19 +202,21 @@ export const MsgBidToLottery = {
     message.creator = object.creator ?? "";
     message.lotteryId = object.lotteryId ?? 0;
     message.bidAmount = object.bidAmount ?? 0;
-    message.bidCount = object.bidCount ?? 0;
     return message;
   },
 };
 
 function createBaseMsgBidToLotteryResponse(): MsgBidToLotteryResponse {
-  return { bidId: 0 };
+  return { bidId: "", bidCount: 0 };
 }
 
 export const MsgBidToLotteryResponse = {
   encode(message: MsgBidToLotteryResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    if (message.bidId !== 0) {
-      writer.uint32(8).uint64(message.bidId);
+    if (message.bidId !== "") {
+      writer.uint32(10).string(message.bidId);
+    }
+    if (message.bidCount !== 0) {
+      writer.uint32(16).uint64(message.bidCount);
     }
     return writer;
   },
@@ -235,7 +229,10 @@ export const MsgBidToLotteryResponse = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.bidId = longToNumber(reader.uint64() as Long);
+          message.bidId = reader.string();
+          break;
+        case 2:
+          message.bidCount = longToNumber(reader.uint64() as Long);
           break;
         default:
           reader.skipType(tag & 7);
@@ -246,18 +243,23 @@ export const MsgBidToLotteryResponse = {
   },
 
   fromJSON(object: any): MsgBidToLotteryResponse {
-    return { bidId: isSet(object.bidId) ? Number(object.bidId) : 0 };
+    return {
+      bidId: isSet(object.bidId) ? String(object.bidId) : "",
+      bidCount: isSet(object.bidCount) ? Number(object.bidCount) : 0,
+    };
   },
 
   toJSON(message: MsgBidToLotteryResponse): unknown {
     const obj: any = {};
-    message.bidId !== undefined && (obj.bidId = Math.round(message.bidId));
+    message.bidId !== undefined && (obj.bidId = message.bidId);
+    message.bidCount !== undefined && (obj.bidCount = Math.round(message.bidCount));
     return obj;
   },
 
   fromPartial<I extends Exact<DeepPartial<MsgBidToLotteryResponse>, I>>(object: I): MsgBidToLotteryResponse {
     const message = createBaseMsgBidToLotteryResponse();
-    message.bidId = object.bidId ?? 0;
+    message.bidId = object.bidId ?? "";
+    message.bidCount = object.bidCount ?? 0;
     return message;
   },
 };

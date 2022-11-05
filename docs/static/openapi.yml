@@ -34395,7 +34395,6 @@ paths:
                   properties:
                     index:
                       type: string
-                      format: uint64
                     bidCount:
                       type: string
                       format: uint64
@@ -34525,7 +34524,6 @@ paths:
                 properties:
                   index:
                     type: string
-                    format: uint64
                   bidCount:
                     type: string
                     format: uint64
@@ -70798,6 +70796,8 @@ definitions:
     properties:
       bidId:
         type: string
+      bidCount:
+        type: string
         format: uint64
   dedicateddev.lottery.lottery.MsgCreateLotteryResponse:
     type: object
@@ -70861,7 +70861,6 @@ definitions:
           properties:
             index:
               type: string
-              format: uint64
             bidCount:
               type: string
               format: uint64
@@ -70921,7 +70920,6 @@ definitions:
         properties:
           index:
             type: string
-            format: uint64
           bidCount:
             type: string
             format: uint64
@@ -70965,7 +70963,6 @@ definitions:
     properties:
       index:
         type: string
-        format: uint64
       bidCount:
         type: string
         format: uint64

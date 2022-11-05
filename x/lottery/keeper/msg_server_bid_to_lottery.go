@@ -42,6 +42,7 @@ func (k msgServer) BidToLottery(goCtx context.Context, msg *types.MsgBidToLotter
 	if !found {
 		storedLottery.BidCount++
 	}
+	k.SetStoredLottery(ctx, storedLottery)
 	return &types.MsgBidToLotteryResponse{
 		BidId:    newBidId,
 		BidCount: storedLottery.BidCount,
